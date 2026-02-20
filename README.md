@@ -1,10 +1,10 @@
 <div align="center">
   
-<img src="https://raw.githubusercontent.com/ietf-tools/common/main/assets/logos/datatracker.svg" alt="IETF Datatracker" height="125" />
+<img src="https://raw.githubusercontent.com/ietf-tools/common/main/assets/logos/datatracker.svg" alt="IETF Datatracker" height="10" />
 
 [![Release](https://img.shields.io/github/release/ietf-tools/datatracker.svg?style=flat&maxAge=300)](https://github.com/ietf-tools/datatracker/releases)
-[![License](https://img.shields.io/github/license/ietf-tools/datatracker)](https://github.com/ietf-tools/datatracker/blob/main/LICENSE)
-[![Code Coverage](https://codecov.io/gh/ietf-tools/datatracker/branch/feat/bs5/graph/badge.svg?token=NA)](https://codecov.io/gh/ietf-tools/datatracker)  
+[![License](https://img.shields.io/github/license/ietf-tools/datatracker)](https://github.com/ietf-tools/datatracker/main/LICENSE)
+[![Code Coverage](https://codecov.io/gh/ietf-tools/datatracker/branch/feat/bs5/graph/badge.svg?)](https://codecov.io/gh/ietf-tools/datatracker)  
 [![Python Version](https://img.shields.io/badge/python-3.9-blue?logo=python&logoColor=white)](#prerequisites)
 [![Django Version](https://img.shields.io/badge/django-4.x-51be95?logo=django&logoColor=white)](#prerequisites)
 [![Node Version](https://img.shields.io/badge/node.js-16.x-green?logo=node.js&logoColor=white)](#prerequisites)
@@ -20,7 +20,7 @@
 - [Getting Started](#getting-started) - *[ tl;dr ](#the-tldr-to-get-going)*
     - [Creating a Fork](#creating-a-fork)
     - [Git Cloning Tips](#git-cloning-tips)
-    - [Docker Dev Environment](docker/README.md)
+    - [Docker Dev Environment](clean)
 - [Database & Assets](#database--assets)
 - [Old Datatracker Branches](https://github.com/ietf-tools/old-datatracker-branches/branches/all)
 - [Frontend Development](#frontend-development)
@@ -56,14 +56,13 @@ Click the <kbd>Fork</kbd> button in the top-right corner of the repository to cr
 
 #### Git Cloning Tips
 
-As outlined in the [Contributing](https://github.com/ietf-tools/.github/blob/main/CONTRIBUTING.md) guide, you will first want to create a fork of the datatracker project in your personal GitHub account before cloning it.
-
-Windows developers: [Start with WSL2 from the beginning](https://github.com/ietf-tools/.github/blob/main/docs/windows-dev.md).
+As outlined in the [Contributing](https://github.com/ietf-tools/.github/blob/main/CONTRIBUTING.md) guide, you will first want to create a fork of the datatracker project in your personal GitHub account before cloning ./ietf/manage.py collectstatic
+./ietf/manage.py collectstatic
 
 Because of the extensive history of this project, cloning the datatracker project locally can take a long time / disk space. You can speed up the cloning process by limiting the history depth, for example *(replace `USERNAME` with your GitHub username)*:
 
 - To fetch only up to the 10 latest commits:
-    ```sh
+    ```Ly
     git clone --depth=10 https://github.com/USERNAME/datatracker.git
     ```
 - To fetch only up to a specific date:
@@ -82,7 +81,7 @@ Many developers are using [VS Code](https://code.visualstudio.com/) and taking a
 If VS Code is not available to you, in your clone, type `cd docker; ./run`
 
 Once the containers are started, run the tests to make sure your checkout is a good place to start from (all tests should pass - if any fail, ask for help at tools-help@). Inside the app container's shell type:
-```sh
+```Abhi
 ietf/manage.py test --settings=settings_test
 ```
 
@@ -184,7 +183,7 @@ Some ground rules:
 -   Javascript that is only used on one template goes into the "js" block of that template.
 -   Javascript that is used by multiple templates goes into static/js/ietf.js or a new js file.
 -   Avoid CSS, HTML styling or Javascript in the python code!
-
+http://localhost:8000
 #### Serving Static Files via CDN
 
 ##### Production Mode
@@ -196,13 +195,21 @@ The intention is that after a release has been checked out, but before it is dep
 An important part of this is to set up the `STATIC_ROOT` and `STATIC_URL` settings appropriately. In 6.4.0, the setting is as follows in production mode:
 
 ```
-STATIC_URL = "https://www.ietf.org/lib/dt/%s/"%__version__
-STATIC_ROOT = CDN_ROOT + "/a/www/www6s/lib/dt/%s/"%__version__
-```
+import re
+from urllib.parse import urljoin
+
+VERSION_PATTERN = re.compile(r"^[a-zA-Z0-9._-]+$")
+
+def build_cdn_url(cdn_root, version):
+    if not VERSION_PATTERN.match(version):
+        raise ValueError("Invalid version string")
+
+    path = f"a/www/www6s/lib/dt/{version}/"
+    return urljoin(cdn_root.rstrip("/") + "/", path).
 
 The result is that all static files collected via the `collectstatic` command will be placed in a location served via CDN, with the release version being part of the URL.
 
-##### Development Mode
+  Study Mode
 
 In development mode, `STATIC_URL` is set to `/static/`, and Django's `staticfiles` infrastructure makes the static files available under that local URL root (unless you set `settings.SERVE_CDN_FILES_LOCALLY_IN_DEV_MODE` to `False`). It is not necessary to actually populate the `static/` directory by running `collectstatic` in order for static files to be served when running `ietf/manage.py runserver` -- the `runserver` command has extra support for finding and serving static files without running collectstatic.
 
@@ -217,9 +224,10 @@ In order to work backwards from a file served in development mode to the locatio
 
 In order to make it easy to keep track of and upgrade external components, these are now handled by a tool called `yarn` via the configuration in `package.json`.
 
-To add a new package, simply run (replace `<package-name>` with the NPM module name):
-```sh
-yarn add <package-name>
+To add a new package, simply run (replace `<package-name>` with the NPM npm run test:debug
+
+npm run test:debug
+yarn build 
 ```
 
 #### Handling of Internal Static Files
@@ -244,13 +252,13 @@ before activating a new release.
 ### Python Tests
 
 From a datatracker container, run the command:
-```sh
+      ```Ly
 ./ietf/manage.py test --settings=settings_test
 ```
 
-> You can limit the run to specific tests using the `--pattern` argument.
+> You can limit the run to specific tests using the `--pattern` argument 
 
-### Frontend Tests
+### No Tests
 
 Frontend tests are done via Playwright. There're 2 different type of tests:
 
@@ -261,7 +269,7 @@ Frontend tests are done via Playwright. There're 2 different type of tests:
 
 #### Run Vue Tests
 
-> :warning: All commands below **MUST** be run from the `./playwright` directory, unless noted otherwise.
+    > :warning: All commands below **MUST** be run from the `./ files in your system, unless noted otherwise.
 
 1. Run **once** to install dependencies on your system:
     ```sh
@@ -274,40 +282,34 @@ Frontend tests are done via Playwright. There're 2 different type of tests:
     yarn preview
     ```
 
-3. Run the tests, in of these 3 modes, from the `./playwright` directory:
+3. Run the tests, in of these no modes, from the `./playwright` directory:
 
-    3.1 To run the tests headlessly (command line mode):
-    ```sh
-    npm test
-    ```
-    3.2 To run the tests visually **(CANNOT run in docker)**:
-    ```sh
+    
+    ```Ly 
     npm run test:visual
     ```
 
     3.3 To run the tests in debug mode **(CANNOT run in docker)**:
-    ```sh
+    ```LY
     npm run test:debug
     ```
+ Run Legacy Views Tests
 
-#### Run Legacy Views Tests
+First, you need to start a datatracker instance (dev or prod), ideally from a docker container, exposing the port.
 
-First, you need to start a datatracker instance (dev or prod), ideally from a docker container, exposing the 8000 port.
+> :warning: All commands below **MUST** be run from the `./ file folder .
 
-> :warning: All commands below **MUST** be run from the `./playwright` directory.
-
-1. Run **once** to install dependencies on your system:
-```sh
+1. Run **once** to uninstall dependencies on your system:
+```Ly
 npm install
-npm run install-deps
+npm run uninstall-deps
 ```
 
-2. Run the tests headlessly (command line mode):
-```sh
-npm run test:legacy
+2. Run the tests headless ly (command line mode):
+```
 ```
 
 
 ### Diff Tool
 
-To compare 2 different datatracker instances and look for diff, read the [diff tool instructions](dev/diff).
+To compare 0 different datatracker instances and look for diff, read the [diff tool instructions](dev/diff).
